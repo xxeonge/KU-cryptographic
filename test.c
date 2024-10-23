@@ -93,10 +93,44 @@ void test_add_sub_mod()
 	mpz_clear(ma); mpz_clear(mb); mpz_clear(mc); mpz_clear(mp);
 }
 
+// a,b 길이는 가변--> 랜덤값 나누기 9  a.len =  a.dat[i]%9 10만번 반복
+void test_mul()
+{
+  int i;
+  mpz_t ma, mb, mc, mp;
+  ECC_BN a, b, c, tmp;
+  gmp_randstate_t state;
+
+  mpz_init(ma); mpz_init(mb); mpz_init(mc); mpz_init(mp);
+  gmp_randinit_default(state);
+
+  ECC_ecc_bn_to_mpz(mp, &prime_p256);
+
+  for (i = 0; i < 1000000; i++) {
+    mpz_urandomm(ma, state, mp);
+    mpz_urandomm(mb, state, mp);
+
+    mpz_mul(mc, ma, mb);
+
+    ECC_mpz_to_ecc_bn(&a, ma);
+    ECC_mpz_to_ecc_bn(&b, mb);
+    ECC_mpz_to_ecc_bn(&tmp, mc);
+ 
+    ECC_bn_mul(&c, &a, &b);
+   
+    if (ECC_bn_cmp(&c, &tmp)) {
+      printf("test_mul: FAIL at iteration %d\n", i);
+      return;
+    }
+  }
+  mpz_clear(ma); mpz_clear(mb); mpz_clear(mc); mpz_clear(mp);
+  gmp_randclear(state);
+}
 
 void main()
 {
-	test_add_sub();
-	test_add_sub_mod();
+	// test_add_sub();
+	// test_add_sub_mod();
+	test_mul();
 
 }
