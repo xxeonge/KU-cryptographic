@@ -40,5 +40,10 @@ int ECC_bn_add(ECC_BN* c, ECC_BN* a, ECC_BN* b);
 int ECC_bn_sub(ECC_BN* c, ECC_BN* a, ECC_BN* b);
 int ECC_bn_mul(ECC_BN* c, ECC_BN* a, ECC_BN* b);
 
+//int ECC_bn_mod_p256(ECC_BN* c, ECC_BN* a, ECC_BN* p);
+
+// 10/30
+int ECC_bn_mod_p256(ECC_BN* c, ECC_BN* a);
+
 int ECC_bn_add_mod(ECC_BN* c, ECC_BN* a, ECC_BN* b, ECC_BN* p);
 int ECC_bn_sub_mod(ECC_BN* c, ECC_BN* a, ECC_BN* b, ECC_BN* p);
