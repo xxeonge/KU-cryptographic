@@ -1,4 +1,3 @@
-#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -15,12 +14,12 @@
 
 typedef struct _ECC_BN
 {
-	unsigned int dat[ECC_P256_WORD_NUM];
-	unsigned int len;
+  unsigned int dat[ECC_P256_WORD_NUM];
+  unsigned int len;
 }ECC_BN;
 
 
-// FFFFFFFF 00000001 000000000000000000000000 FFFFFFFF FFFFFFFF FFFFFFFF
+// FFFFFFFF 00000001 00000000 00000000 00000000 FFFFFFFF FFFFFFFF FFFFFFFF
 static ECC_BN prime_p256 = {
   {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000,
    0x00000000, 0x00000000, 0x00000001, 0xFFFFFFFF}, 8
@@ -36,14 +35,16 @@ int ECC_bn_cpy(ECC_BN* c, ECC_BN* a);
 int ECC_bn_cmp(ECC_BN* a, ECC_BN* b);
 
 // 
-int ECC_bn_add(ECC_BN* c, ECC_BN* a, ECC_BN* b);
+int ECC_bn_1bit_rshift(ECC_BN* c, ECC_BN* a);
+int ECC_bn_add(ECC_BN* c, ECC_BN* a, ECC_BN *b);
 int ECC_bn_sub(ECC_BN* c, ECC_BN* a, ECC_BN* b);
 int ECC_bn_mul(ECC_BN* c, ECC_BN* a, ECC_BN* b);
 
-//int ECC_bn_mod_p256(ECC_BN* c, ECC_BN* a, ECC_BN* p);
-
-// 10/30
+//int ECC_bn_mod(ECC_BN* c, ECC_BN* a, ECC_BN* p);
 int ECC_bn_mod_p256(ECC_BN* c, ECC_BN* a);
+
+// c= a^(-1) mod p
+int ECC_bn_binary_inv(ECC_BN* c, ECC_BN* a);
 
 int ECC_bn_add_mod(ECC_BN* c, ECC_BN* a, ECC_BN* b, ECC_BN* p);
 int ECC_bn_sub_mod(ECC_BN* c, ECC_BN* a, ECC_BN* b, ECC_BN* p);

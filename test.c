@@ -136,10 +136,112 @@ void test_mod() {
 
     gmp_randclear(state);
 }
+
+void test_binary_inv() {
+    int i;
+    mpz_t ma, mc, mp, one, product;
+    ECC_BN a, c, tmp;
+    gmp_randstate_t state;
+
+    mpz_init(ma);
+    mpz_init(mc);
+    mpz_init(mp);
+    mpz_init_set_ui(one, 1); 
+    mpz_init(product);
+    gmp_randinit_default(state);
+
+    ECC_ecc_bn_to_mpz(mp, &prime_p256);
+
+    for (i = 0; i < 100000; i++) {
+        mpz_urandomm(ma, state, mp);
+        
+
+        ECC_mpz_to_ecc_bn(&a, ma);
+
+        if (ECC_bn_binary_inv(&c, &a) != ECC_PASS) {
+            printf("ECC_bn_binary_inv: FAIL - Could not find inverse %d\n", i);
+            return;
+        }
+
+        ECC_ecc_bn_to_mpz(mc, &c);
+
+        mpz_mul(product, ma, mc);
+        mpz_mod(product, product, mp);
+
+        if (mpz_cmp(product, one) != 0) {
+            printf("ECC_bn_binary_inv: FAIL  %d\n", i);
+            gmp_printf("ma: %Zx\n", ma);
+            gmp_printf("mc (inv): %Zx\n", mc);
+            gmp_printf("product: %Zx\n", product);
+            return;
+        }
+    }
+
+    printf("ECC_bn_binary_inv: PASS\n");
+
+    mpz_clear(ma);
+    mpz_clear(mc);
+    mpz_clear(mp);
+    mpz_clear(one);
+    mpz_clear(product);
+    gmp_randclear(state);
+}
+
+void test_ECC_bn_binary_inv() {
+    int i;
+    mpz_t ma, mc, mp, one, product;
+    ECC_BN a, c, tmp;
+    gmp_randstate_t state;
+
+    mpz_init(ma);
+    mpz_init(mc);
+    mpz_init(mp);
+    mpz_init_set_ui(one, 1);
+    mpz_init(product);
+    gmp_randinit_default(state);
+
+    ECC_ecc_bn_to_mpz(mp, &prime_p256);
+
+    for (i = 0; i < 100000; i++) {
+        mpz_urandomm(ma, state, mp);
+        
+        ECC_mpz_to_ecc_bn(&a, ma);
+
+        if (ECC_bn_binary_inv(&c, &a) != ECC_PASS) {
+            printf("ECC_bn_binary_inv: FAIL - Could not find inverse %d\n", i);
+            return;
+        }
+
+        ECC_ecc_bn_to_mpz(mc, &c);
+
+        mpz_mul(product, ma, mc);
+        mpz_mod(product, product, mp);
+
+        if (mpz_cmp(product, one) != 0) {
+            printf("ECC_bn_binary_inv: FAIL %d\n", i);
+            gmp_printf("ma: %Zx\n", ma);
+            gmp_printf("mc (inv): %Zx\n", mc);
+            gmp_printf("product: %Zx\n", product);
+            return;
+        }
+    }
+
+    printf("ECC_bn_binary_inv: PASS\n");
+
+    mpz_clear(ma);
+    mpz_clear(mc);
+    mpz_clear(mp);
+    mpz_clear(one);
+    mpz_clear(product);
+    gmp_randclear(state);
+}
+
+
 void main()
 {
     // test_add_sub();
     // test_add_sub_mod();
-    test_mul();
-    test_mod();
+    // test_mul();
+    // test_mod();
+    test_ECC_bn_binary_inv();
 }
