@@ -136,12 +136,12 @@ int ECC_bn_sub(ECC_BN* c, ECC_BN* a, ECC_BN* b)
   int i, borrow = 0;
   ECC_BN out;
   
-  for (i = 0; i < a->len; i++) {
+  for (i = 0; i < b->len; i++) {
 	out.dat[i] = a->dat[i] - b->dat[i] - borrow;
 	borrow = (borrow) ? (a->dat[i]<=b->dat[i]) :(a->dat[i]<b->dat[i]);
   }
 
-  for (; i < b->len; i++) {
+  for (; i < a->len; i++) {
 	out.dat[i] = a->dat[i] - borrow;
 	borrow = a->dat[i] < borrow;
   }
@@ -361,7 +361,7 @@ int ECC_bn_binary_inv(ECC_BN* c, ECC_BN* a)
             if ((x1.dat[0] & 1) == 0) {
                 ECC_bn_1bit_rshift(&x1, &x1); 
             } else {
-                ECC_bn_add_mod(&x1, &x1, &prime_p256); 
+                ECC_bn_add(&x1, &prime_p256, &x1); 
                 ECC_bn_1bit_rshift(&x1, &x1);
             }
         }
@@ -372,7 +372,7 @@ int ECC_bn_binary_inv(ECC_BN* c, ECC_BN* a)
             if ((x2.dat[0] & 1) == 0) {
                 ECC_bn_1bit_rshift(&x2, &x2);  
             } else {
-                ECC_bn_add_mod(&x2, &x2, &prime_p256);  
+                ECC_bn_add(&x2, &prime_p256, &x2);  
                 ECC_bn_1bit_rshift(&x2, &x2);
             }
         }
@@ -393,10 +393,6 @@ int ECC_bn_binary_inv(ECC_BN* c, ECC_BN* a)
     }
     return ECC_PASS;
 }
-
-
-
-
 
 
 // a,b in GF(p)
